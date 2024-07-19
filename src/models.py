@@ -2,18 +2,45 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+#user
+#[GET] /users  //  [GET] /users/favorites
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    username = db.Column(db.String(50), nullable=False)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+#PEOPLE_FAV
+#[GET] /people  //  #[GET] /people/<int:people_id> // 
+class People(db.Model):
+    __tablename__ = 'peoples'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    height = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.String(50), nullable=False)
+    created = db.Column(db.DateTime, nullable=False)
+    url = db.Column(db.String(50), nullable=False)
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+#[POST] /favorite/people/<int:people_id> // #[DELETE] /favorite/people/<int:people_id>
+class Favorite_People(db.Model):
+    __tablename__ = 'favorites_peoples'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'), nullable=False)
+
+#PLANETS_FAV
+#[GET] /planets // #[GET] /planets/<int:planet_id> // 
+class Planet(db.Model):
+    __tablename__ = 'planets'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    diameter = db.Column(db.Integer, nullable=False)
+    climate = db.Column(db.String(50), nullable=False)
+    population = db.Column(db.String, nullable=False)
+    url = db.Column(db.String(50), nullable=False)
+
+#[POST] /favorite/planet/<int:planet_id> // #[DELETE] /favorite/planet/<int:planet_id>
+class Favorite_Planet(db.Model):
+    __tablename__ = 'favorites_planets'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'), nullable=False)
