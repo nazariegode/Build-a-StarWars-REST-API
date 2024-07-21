@@ -42,6 +42,11 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@app.route('/planets', methods=['GET'])
+def get_planets():
+    planets = Planets.query.all()
+    results = [{"id": planet.id, "name": planet.name, "diameter": planet.diameter, "climate": planet.climate, "population": planet.population, "url": planet.url} for planet in planets]
+    return jsonify(results), 200
 
 
 
